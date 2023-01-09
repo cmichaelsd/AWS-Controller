@@ -1,0 +1,28 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: POC of AWS-SDK Service Stack
+
+Resources:
+  # Just put any Resource to build, it doesn't matter just so we have a Stack to update.
+  MyTestRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+                - lambda.amazonaws.com
+            Action:
+              - 'sts:AssumeRole'
+
+  # See if S3 Bucket can be added after updating service stack.
+  S3Bucket:
+    Type: 'AWS::S3::Bucket'
+    DeletionPolicy: Retain
+    Properties:
+      BucketName: test-self-service-bucket-cole-michaels
+
+Outputs:
+  Version:
+    Value: 2

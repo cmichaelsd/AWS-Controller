@@ -1,0 +1,40 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: POC of AWS-SDK stack creation
+
+Resources:
+  CloudFormationServiceRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+                - cloudformation.amazonaws.com
+            Action:
+              - 'sts:AssumeRole'
+
+  CloudFormationServiceMangedPolicy:
+    Type: AWS::IAM::ManagedPolicy
+    Properties:
+      Description: Managed Policy to attach to CloudFormationServiceRole Role
+      ManagedPolicyName: CloudFormationServiceMangedPolicyForCloudFormation
+      Path: /
+      PolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Action:
+              - 'cloudformation:*'
+              - 'iam:*'
+              - 's3:*'
+            Resource: '*'
+      Roles:
+        - !Ref CloudFormationServiceRole
+
+  S3Bucket:
+    Type: 'AWS::S3::Bucket'
+    DeletionPolicy: Retain
+    Properties:
+      BucketName: test-self-service-bucket-cole-michaels
