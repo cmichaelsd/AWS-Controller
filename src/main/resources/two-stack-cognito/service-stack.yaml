@@ -1,5 +1,5 @@
 AWSTemplateFormatVersion: '2010-09-09'
-Description: POC of AWS-SDK stack creation
+Description: POC of AWS-SDK Service Stack
 
 Resources:
   CloudFormationServiceRole:
@@ -28,13 +28,12 @@ Resources:
             Action:
               - 'cloudformation:*'
               - 'iam:*'
-              - 's3:*'
+              - 'cognito:*'
+              - 'cognito-idp:*'
             Resource: '*'
       Roles:
         - !Ref CloudFormationServiceRole
 
-  S3Bucket:
-    Type: 'AWS::S3::Bucket'
-    DeletionPolicy: Retain
-    Properties:
-      BucketName: test-self-service-bucket-cole-michaels
+Outputs:
+  Version:
+    Value: 1

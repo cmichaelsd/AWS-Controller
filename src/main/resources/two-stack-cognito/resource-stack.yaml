@@ -1,0 +1,58 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: POC of AWS-SDK Service Stack
+
+Resources:
+  UserPoolPKCEClient:
+    Type: "AWS::Cognito::UserPoolClient"
+    Properties:
+      ClientName: "test-federation-client"
+      UserPoolId: !Ref UserPool
+      GenerateSecret: true
+      SupportedIdentityProviders:
+        - COGNITO
+      PreventUserExistenceErrors: ENABLED
+
+  UserPool:
+    Type: "AWS::Cognito::UserPool"
+    Properties:
+      UserPoolName: "test-user-pool"
+      AccountRecoverySetting:
+        RecoveryMechanisms:
+          - Name: "verified_email"
+            Priority: 1
+      AdminCreateUserConfig:
+        AllowAdminCreateUserOnly: true
+        InviteMessageTemplate:
+          EmailMessage: "test"
+          EmailSubject: "Test Subject"
+      AutoVerifiedAttributes:
+        - email
+      Schema:
+        - Name: email
+          AttributeDataType: String
+          Mutable: false
+          Required: true
+
+  UserPoolDomain:
+    Type: AWS::Cognito::UserPoolDomain
+    Properties:
+      UserPoolId: !Ref UserPool
+      # Domain cannot contain reserved word: aws
+      Domain: "cole-michaels-test-123"
+
+  SignupUser:
+    Type: AWS::Cognito::UserPoolUser
+    Properties:
+      DesiredDeliveryMediums:
+        - "EMAIL"
+      UserAttributes:
+        - Name: email
+          Value: "cole.michaels@oracle.com"
+        - Name: email_verified
+          Value: True
+      Username: "cole.michaels@oracle.com"
+      UserPoolId: !Ref UserPool
+
+Outputs:
+  Version:
+    Value: 1

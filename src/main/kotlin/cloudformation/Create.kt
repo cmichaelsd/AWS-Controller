@@ -1,24 +1,30 @@
-package stack
+package cloudformation
 
 import software.amazon.awssdk.core.waiters.WaiterResponse
 import software.amazon.awssdk.regions.Region
 import software.amazon.awssdk.services.cloudformation.CloudFormationClient
-import software.amazon.awssdk.services.cloudformation.model.*
+import software.amazon.awssdk.services.cloudformation.model.Capability
+import software.amazon.awssdk.services.cloudformation.model.CreateStackRequest
+import software.amazon.awssdk.services.cloudformation.model.DescribeStacksRequest
+import software.amazon.awssdk.services.cloudformation.model.DescribeStacksResponse
 import software.amazon.awssdk.services.cloudformation.waiters.CloudFormationWaiter
 
-class Delete(
+class Create(
+    private val templateURL: String,
     stackName: String,
     roleARN: String,
     region: Region
-) : AbstractStackOperation(stackName, roleARN, region) {
+) : AbstractCloudFormationOperation(stackName, roleARN, region) {
     override fun operate(cfClient: CloudFormationClient) {
-        val createStackRequest: DeleteStackRequest = DeleteStackRequest
+        val createStackRequest: CreateStackRequest = CreateStackRequest
             .builder()
             .stackName(stackName)
+            .templateURL(templateURL)
             .roleARN(roleARN)
+            .capabilities(Capability.CAPABILITY_NAMED_IAM)
             .build()
 
-        cfClient.deleteStack(createStackRequest)
+        cfClient.createStack(createStackRequest)
     }
 
     override fun describeStack(cfClient: CloudFormationClient) {
@@ -30,7 +36,7 @@ class Delete(
             .build()
 
         val waiterResponse: WaiterResponse<DescribeStacksResponse> = waiter
-            .waitUntilStackDeleteComplete(describeStacksRequest)
+            .waitUntilStackCreateComplete(describeStacksRequest)
 
         waiterResponse.matched().response()?.let {
             println(it)

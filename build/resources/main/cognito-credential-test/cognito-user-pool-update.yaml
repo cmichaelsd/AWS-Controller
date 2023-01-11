@@ -1,0 +1,236 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: POC of AWS-SDK Service Stack
+
+Resources:
+  UserPoolPKCEClient:
+    Type: "AWS::Cognito::UserPoolClient"
+    Properties:
+      ClientName: "test-federation-client"
+      UserPoolId: !Ref UserPool
+      GenerateSecret: true
+      SupportedIdentityProviders:
+        - COGNITO
+      PreventUserExistenceErrors: ENABLED
+
+  UserPool:
+    Type: "AWS::Cognito::UserPool"
+    Properties:
+      UserPoolName: "test-user-pool"
+      AccountRecoverySetting:
+        RecoveryMechanisms:
+          - Name: "verified_email"
+            Priority: 1
+      AdminCreateUserConfig:
+        AllowAdminCreateUserOnly: true
+        InviteMessageTemplate:
+          EmailMessage: !Join [ " ", [ '<!DOCTYPE html>
+            <html lang="en">
+            <head>
+                <meta charset="UTF-8">
+                <title>Oracle Database Serivce for AWS</title>
+                <style>
+                    * {
+                        margin: 0px;
+                        padding: 0px;
+                        border: none;
+                    }
+
+                    .outer-table {
+                        border-collapse: collapse;
+                        border: 3px solid #1D5C9F;
+                    }
+
+                    tr {
+                        width: 750;
+                    }
+
+                    .heading {
+                        font-family: Helvetica Neue;
+                        font-size: 18px;
+                        font-weight: 300;
+                        line-height: 22px;
+                        letter-spacing: 0.20000000298023224px;
+                        text-align: left;
+                    }
+
+                    .text {
+                        font-family: Helvetica Neue;
+                        font-size: 14px;
+                        font-weight: 400;
+                        line-height: 22px;
+                        letter-spacing: 0px;
+                        text-align: left;
+                    }
+
+                    .copyrighttext {
+                        font-family: Helvetica Neue;
+                        font-size: 10px;
+                        font-weight: 400;
+                        line-height: 22px;
+                        letter-spacing: 0px;
+                        text-align: left;
+                    }
+
+                    .boldtext {
+                        font-family: Helvetica Neue;
+                        font-size: 14px;
+                        font-weight: 700;
+                        line-height: 22px;
+                        letter-spacing: 0px;
+                        text-align: left;
+                    }
+
+                    .linktext {
+                        font-family: Helvetica Neue;
+                        height: initial;
+                        font-size: 12px;
+                        font-weight: 500;
+                        line-height: 20px;
+                        letter-spacing: 0px;
+                        text-align: left;
+                        vertical-align: top;
+                        margin: -20px 0 0 5px;
+                        color: #0572CE;
+                    }
+
+                    .logo {
+                        margin: -4px 0;
+                    }
+
+                    .paddingTop {
+                        padding-top: 20px;
+                    }
+
+                    .paddingLeft {
+                        padding-left: 20px;
+                    }
+
+                    .paddingRight {
+                        padding-right: 20px;
+                    }
+
+                    .paddingBottom {
+                        padding-bottom: 20px;
+                    }
+                </style>
+
+            </head>
+
+            <body>
+                <table class="outer-table">
+                    <tr>
+                        <td colspan="3">
+                            <img class="logo" src="https://odsaws-invitation-letter.s3.amazonaws.com/banner_oracle.png" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="3">
+                            <img class="logo" src="https://odsaws-invitation-letter.s3.amazonaws.com/banner_odsaws.png" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="3">
+                            <p class="boldtext paddingTop paddingLeft">Hello,</p>
+                            <br>
+                            <p class="text paddingLeft">Thank you for signing up for Oracle Database Service for AWS. We are still
+                                finalizing a few details for your account,<br /> but you can get started by signing in below. </p>
+                            <br>
+                            <div
+                                    style="height: 150px;width: 649px; margin-left: 46px; border-radius: 0px; align: middle;background-color:#F4F4F4;">
+                                <p class="heading paddingTop paddingLeft">Access details: <br><br> </p>
+                                <p class="boldtext paddingLeft">Account ID: ',
+            !Ref AWS::AccountId,
+            '</p>
+                                <p class="boldtext paddingLeft">Username: {username} </p>
+                                <p class="boldtext paddingLeft">Password: {####} </p>
+                            </div>
+                            <p class="text"> </p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="3">
+                            <p class="boldtext paddingLeft paddingTop">Need help? </p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="paddingLeft paddingTop paddingBottom">
+                                <img width="24" height="24"
+                                     src="https://odsaws-invitation-letter.s3.amazonaws.com/icon_chat_sales.png" /><a
+                                    href="https://www.oracle.com/corporate/contact/" target="_blank" rel="noopener noreferrer"
+                                    class="linktext">Chat with Oracle Sales</a>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="paddingTop paddingBottom">
+                                <img width="24" height="24"
+                                     src="https://odsaws-invitation-letter.s3.amazonaws.com/icon_chat_support.png" /><a
+                                    href="https://docs.oracle.com/en-us/iaas/Content/multicloud/help.htm" target="_blank" rel="noopener noreferrer"
+                                    class="linktext">Chat with Oracle Support</a>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="paddingTop paddingBottom">
+                                <img width="24" height="24"
+                                     src="https://odsaws-invitation-letter.s3.amazonaws.com/icon_documentation.png" /><a
+                                    href="https://docs.oracle.com/iaas/Content/multicloud/odsaws-intro.htm" target="_blank"
+                                    rel="noopener noreferrer" class="linktext">Documentation</a>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="3">
+                            <div
+                                    style="height: 124px;width: 750px;left: 0px;top: 749px;border-radius: 0px;background-color: #EFF3F6;">
+                                <p class="copyrighttext paddingLeft paddingRight paddingTop paddingBottom">
+                                    Copyright © 2022, Oracle and/or its affiliates. All rights reserved. <a
+                                        href="https://docs.oracle.com/iaas/Content/multicloud/odsaws-intro.htm" target="_blank"
+                                        rel="noopener noreferrer">About Oracle Database Service for AWS</a> | <a
+                                        href="https://www.oracle.com/legal/terms.html" target="_blank" rel="noopener noreferrer">
+                                    Legal Notices and Terms of use</a> | <a href="https://www.oracle.com/legal/privacy/"
+                                                                            target="_blank" rel="noopener noreferrer">Privacy Statement</a>
+                                    <br>
+                                    This is a system generated message. Don’t reply to this message. You’re receiving this e-mail as
+                                    a result of your current relationship with Oracle Cloud. General marketing opt-out preferences
+                                    have been overridden to ensure that you receive this e-mail.
+                                </p>
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+            <p>
+            </p>
+            </body>
+            </html>' ] ]
+          EmailSubject: "Get started with Oracle Database Service for AWS"
+      AutoVerifiedAttributes:
+        - email
+      Schema:
+        - Name: email
+          AttributeDataType: String
+          Mutable: false
+          Required: true
+
+  UserPoolDomain:
+    Type: AWS::Cognito::UserPoolDomain
+    Properties:
+      UserPoolId: !Ref UserPool
+      # Domain cannot contain reserved word: aws
+      Domain: "cole-michaels-test-123"
+
+  SignupUser:
+    Type: AWS::Cognito::UserPoolUser
+    Properties:
+      DesiredDeliveryMediums:
+        - "EMAIL"
+      UserAttributes:
+        - Name: email
+          Value: "cole.michaels@oracle.com"
+        - Name: email_verified
+          Value: True
+      Username: "cole.michaels@oracle.com"
+      UserPoolId: !Ref UserPool
+
+Outputs:
+  Version:
+    Value: 2

@@ -1,22 +1,22 @@
-package stack
+package cloudformation
 
 import software.amazon.awssdk.core.waiters.WaiterResponse
 import software.amazon.awssdk.regions.Region
 import software.amazon.awssdk.services.cloudformation.CloudFormationClient
 import software.amazon.awssdk.services.cloudformation.model.Capability
-import software.amazon.awssdk.services.cloudformation.model.CreateStackRequest
 import software.amazon.awssdk.services.cloudformation.model.DescribeStacksRequest
 import software.amazon.awssdk.services.cloudformation.model.DescribeStacksResponse
+import software.amazon.awssdk.services.cloudformation.model.UpdateStackRequest
 import software.amazon.awssdk.services.cloudformation.waiters.CloudFormationWaiter
 
-class Create(
+class Update(
     private val templateURL: String,
     stackName: String,
     roleARN: String,
     region: Region
-) : AbstractStackOperation(stackName, roleARN, region) {
+) : AbstractCloudFormationOperation(stackName, roleARN, region) {
     override fun operate(cfClient: CloudFormationClient) {
-        val createStackRequest: CreateStackRequest = CreateStackRequest
+        val createStackRequest: UpdateStackRequest = UpdateStackRequest
             .builder()
             .stackName(stackName)
             .templateURL(templateURL)
@@ -24,7 +24,7 @@ class Create(
             .capabilities(Capability.CAPABILITY_NAMED_IAM)
             .build()
 
-        cfClient.createStack(createStackRequest)
+        cfClient.updateStack(createStackRequest)
     }
 
     override fun describeStack(cfClient: CloudFormationClient) {
@@ -36,7 +36,7 @@ class Create(
             .build()
 
         val waiterResponse: WaiterResponse<DescribeStacksResponse> = waiter
-            .waitUntilStackCreateComplete(describeStacksRequest)
+            .waitUntilStackUpdateComplete(describeStacksRequest)
 
         waiterResponse.matched().response()?.let {
             println(it)

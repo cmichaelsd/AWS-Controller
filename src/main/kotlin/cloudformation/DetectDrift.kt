@@ -1,4 +1,4 @@
-package stack
+package cloudformation
 
 import software.amazon.awssdk.regions.Region
 import software.amazon.awssdk.services.cloudformation.CloudFormationClient
@@ -10,7 +10,7 @@ class DetectDrift(
     stackName: String,
     roleARN: String,
     region: Region
-) : AbstractStackOperation(stackName, roleARN, region) {
+) : AbstractCloudFormationOperation(stackName, roleARN, region) {
     var stackDriftDetectionId: String? = null
 
     override fun operate(cfClient: CloudFormationClient) {
